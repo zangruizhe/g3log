@@ -16,6 +16,9 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 
 namespace g3 {
@@ -118,6 +121,22 @@ namespace g3 {
          return out;
       }
 
+      std::string GetExecutionName() {
+        char exe[1024];
+        int ret;
 
+        ret = readlink("/proc/self/exe",exe,sizeof(exe)-1);
+        if(ret ==-1) {
+          return "";
+        }
+        exe[ret] = 0;
+        return std::string(exe) + ".";
+      }
+
+      void CreatLinkToLogFile(const std::string& log_file_path) {
+        std::string sys_cmd = "ln -sf ";
+        sys_cmd.append(log_file_path).append(" ").append(GetExecutionName()).append("LOG");
+        system(sys_cmd.c_str());
+      }
    }
 }

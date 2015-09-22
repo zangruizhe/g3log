@@ -23,6 +23,7 @@
 #include <cstdlib>
 #include <sstream>
 #include <iostream>
+#include <string.h>
 
 
 // Linux/Clang, OSX/Clang, OSX/gcc
@@ -85,6 +86,7 @@ namespace g3 {
             return {rawdump};
          }
 
+         char syscom[256];
          const size_t max_dump_size = 50;
          void *dump[max_dump_size];
          size_t size = backtrace(dump, max_dump_size);
@@ -124,6 +126,13 @@ namespace g3 {
                   oss << "\tstack dump [" << idx << "]  " << messages[idx] << mangled_name << "+";
                   oss << offset_begin << offset_end << std::endl;
                }
+
+               memset(syscom, 0, sizeof(syscom));
+               int tmp = (offset_end - messages[idx]);
+               sprintf(syscom,"eu-addr2line  %p -e %.*s", dump[idx] ,  ++tmp, messages[idx]);
+               std::cout << "system command:" << std::string(syscom) << std::endl;
+               system(syscom);
+
                free(real_name); // mallocated by abi::__cxa_demangle(...)
             } else {
                // no demangling done -- just dump the whole line
@@ -150,6 +159,8 @@ namespace g3 {
          case SIGILL: return "SIGILL";
             break;
          case SIGTERM: return "SIGTERM";
+            break;
+         case SIGINT: return "SIGINT";
             break;
          default:
             std::ostringstream oss;
@@ -221,6 +232,8 @@ namespace g3 {
          perror("sigaction - SIGSEGV");
       if (sigaction(SIGTERM, &action, NULL) < 0)
          perror("sigaction - SIGTERM");
+      if (sigaction(SIGINT, &action, NULL) < 0)
+         perror("sigaction - SIGINT");
 #endif
    }
 

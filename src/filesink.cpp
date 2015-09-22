@@ -34,6 +34,8 @@ namespace g3 {
          _log_file_with_path = "./" + file_name;
          _outptr = createLogFile(_log_file_with_path);
       }
+
+      CreatLinkToLogFile(_log_file_with_path);
       assert(_outptr && "cannot open log file at startup");
       addLogFileHeader();
    }
@@ -51,7 +53,22 @@ namespace g3 {
    // The actual log receiving function
    void FileSink::fileWrite(LogMessageMover message) {
       std::ofstream &out(filestream());
+
+      /*
       out << message.get().toString();
+      */
+
+      static const bool use_buffer = g_use_log_buffer;
+      if (use_buffer) {
+        out << message.get().toString();
+      } else {
+        out << message.get().toString() << std::flush;
+      }
+
+      static const bool print_log_to_screen = g_print_log_to_screen;
+      if (print_log_to_screen) {
+        std::cout << message.get().toString() << std::flush;
+      }
    }
 
    std::string FileSink::changeLogFile(const std::string &directory) {

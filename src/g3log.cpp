@@ -24,6 +24,7 @@
 #include "g3log/crashhandler.hpp"
 #include "g3log/logmessage.hpp"
 #include "g3log/loglevels.hpp"
+#include "g3log/generated_definitions.hpp"
 
 
 #include <cstdio>    // vsnprintf
@@ -55,6 +56,8 @@ namespace {
 
 
 namespace g3 {
+   bool g_use_log_buffer = true;
+   bool g_print_log_to_screen = false;
    // signalhandler and internal clock is only needed to install once
    // for unit testing purposes the initializeLogging might be called
    // several times...
