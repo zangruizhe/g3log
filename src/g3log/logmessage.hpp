@@ -45,6 +45,10 @@ namespace g3 {
          return _level.text;
       }
 
+      std::string thread_id() const {
+         return std::to_string(_thread_id);
+      }
+
       /// use a different format string to get a different look on the time.
       //  default look is Y/M/D H:M:S
       std::string timestamp(const std::string& time_format = {internal::date_formatted + " " + internal::time_formatted}) const;
@@ -97,6 +101,7 @@ namespace g3 {
       LEVELS _level;
       std::string _expression; // only with content for CHECK(...) calls
       mutable std::string _message;
+      unsigned int _thread_id;
 
 
 

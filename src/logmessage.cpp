@@ -36,12 +36,18 @@ namespace {
 
 namespace g3 {
 
+#include <unistd.h>
+#include <sys/syscall.h>
+
+  unsigned int GetTID() {
+    return static_cast<unsigned int>((pid_t) syscall (SYS_gettid));
+  }
 
    // helper for setting the normal log details in an entry
    std::string LogDetailsToString(const LogMessage& msg) {
       std::string out;
       out.append("\n" + msg.timestamp() + " " + msg.microseconds() +  "\t"
-                 + msg.level() + " [" + msg.file() + " L: " + msg.line() + "]\t");
+                 + msg.level() + "\t" + msg.thread_id() + " [" + msg.file() + " L: " + msg.line() + "]\t");
       return out;
    }
 
@@ -145,7 +151,9 @@ namespace g3 {
       , _line(line)
       , _function(function)
       , _level(level)
-   {}
+   {
+     _thread_id = GetTID();
+   }
 
 
    LogMessage::LogMessage(const std::string& fatalOsSignalCrashMessage)
@@ -162,7 +170,8 @@ namespace g3 {
       , _function(other._function)
       , _level(other._level)
       , _expression(other._expression)
-      , _message(other._message) {
+      , _message(other._message)
+      , _thread_id(other._thread_id) {
    }
 
    LogMessage::LogMessage(LogMessage &&other)
@@ -174,7 +183,8 @@ namespace g3 {
       , _function(std::move(other._function))
       , _level(other._level)
       , _expression(std::move(other._expression))
-      , _message(std::move(other._message)) {
+      , _message(std::move(other._message)) 
+      , _thread_id(other._thread_id) {
    }
 
 

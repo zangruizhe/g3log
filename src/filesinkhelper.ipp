@@ -121,6 +121,15 @@ namespace g3 {
          return out;
       }
 
+      std::string GetFilename (const std::string& str)
+      {
+        std::cout << "Splitting: " << str << '\n';
+        std::size_t found = str.find_last_of("/\\");
+        // std::cout << " path: " << str.substr(0,found) << '\n';
+        // std::cout << " file: " << str.substr(found+1) << '\n';
+        return str.substr(found+1);
+      }
+
       std::string GetExecutionName() {
         char exe[1024];
         int ret;
@@ -130,12 +139,15 @@ namespace g3 {
           return "";
         }
         exe[ret] = 0;
-        return std::string(exe) + ".";
+        return GetFilename(std::string(exe)) + ".";
       }
 
-      void CreatLinkToLogFile(const std::string& log_file_path) {
+
+
+      void CreatLinkToLogFile(const std::string& log_file_path, const std::string& execution__file_name) {
         std::string sys_cmd = "ln -sf ";
-        sys_cmd.append(log_file_path).append(" ").append(GetExecutionName()).append("LOG");
+        // sys_cmd.append(log_file_path).append(" ").append(GetExecutionName()).append("LOG");
+        sys_cmd.append(log_file_path).append(" ").append(execution__file_name).append(".LOG");
         system(sys_cmd.c_str());
       }
    }

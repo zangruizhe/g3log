@@ -17,6 +17,9 @@
 #include <iostream>
 #include <cassert>
 #include <functional>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 
 namespace g3 {
@@ -125,7 +128,11 @@ namespace g3 {
    }
 
    std::unique_ptr<FileSinkHandle>LogWorker::addDefaultLogger(const std::string& log_prefix, const std::string& log_directory) {
-      return addSink(std2::make_unique<g3::FileSink>(log_prefix, log_directory), &FileSink::fileWrite);
+     const char* prefix_ptr = log_prefix.c_str();
+     const char* slash = strrchr(prefix_ptr, '/');
+     std::string file_prefix = slash ? std::string(slash + 1) : log_prefix ;
+
+     return addSink(std2::make_unique<g3::FileSink>(file_prefix, log_directory), &FileSink::fileWrite);
    }
 
 

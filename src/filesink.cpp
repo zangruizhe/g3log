@@ -35,7 +35,7 @@ namespace g3 {
          _outptr = createLogFile(_log_file_with_path);
       }
 
-      CreatLinkToLogFile(_log_file_with_path);
+      CreatLinkToLogFile(_log_file_with_path, log_prefix);
       assert(_outptr && "cannot open log file at startup");
       addLogFileHeader();
    }

@@ -138,6 +138,8 @@ namespace g3 {
 // LOG(level) is the API for the stream log
 #define LOG(level) if(g3::logLevel(level)) INTERNAL_LOG_MESSAGE(level).stream()
 
+// LOG(level) is the API for the stream log
+#define VLOG(verboselevel) if(verboselevel <= g3::g_log_v) LOG(INFO)
 
 // 'Conditional' stream log
 #define LOG_IF(level, boolean_expression)  \

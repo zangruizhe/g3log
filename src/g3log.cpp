@@ -58,6 +58,7 @@ namespace {
 namespace g3 {
    bool g_use_log_buffer = true;
    bool g_print_log_to_screen = false;
+   unsigned int  g_log_v = 0;
    // signalhandler and internal clock is only needed to install once
    // for unit testing purposes the initializeLogging might be called
    // several times...
@@ -65,7 +66,7 @@ namespace g3 {
 
    void initializeLogging(LogWorker *bgworker) {
       std::call_once(g_initialize_flag, [] {
-         installCrashHandler();
+          installCrashHandler();
       });
       std::lock_guard<std::mutex> lock(g_logging_init_mutex);
       CHECK(!internal::isLoggingInitialized());
